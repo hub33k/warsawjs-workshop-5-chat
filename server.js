@@ -3,15 +3,25 @@ const server = io(); // socket
 
 const USERS = {};
 
-server.on('connection', (client) => {
-    console.log(`Hello, your id: ${client.id}`);
-
-    client.on('message', (msg) => {
+function handleMessage(client) {
+    return (msg) => {
         console.log(msg);
         client.broadcast.emit('message', msg); // send msg to all clients
-    });
+    }
+}
 
-    client.on('register', (userObject) => {
+// same as above
+// function handleMessage(client) {
+//     function callback(msg) {
+//         console.log(msg);
+//         client.broadcast.emit('message', msg); // send msg to all clients
+//     }
+//
+//     return callback;
+// }
+
+function handleRegister(client) {
+    return (userObject) => {
         if (USERS[userObject.username]) {
             client.emit('register', false);
         } else {
@@ -21,9 +31,12 @@ server.on('connection', (client) => {
             };
             client.emit('register', true);
         }
-    });
 
-    client.on('login', (userObject) => {
+    }
+}
+
+function handleLogin(client) {
+    return (userObject) => {
         const user = USERS[userObject.username];
 
         if (user.password === userObject.password) {
@@ -32,11 +45,24 @@ server.on('connection', (client) => {
         } else {
             client.emit('login', false);
         }
-    });
+    }
+}
 
-    client.on('logout', (username) => {
-        USERS[username].logged_in = false;
-    });
+function handleLogout(username) {
+    USERS[username].logged_in = false;
+}
+
+
+server.on('connection', (client) => {
+    console.log(`Hello, your id: ${client.id}`);
+
+    client.on('message', handleMessage(client));
+
+    client.on('register', handleRegister(client));
+
+    client.on('login', handleLogin(client));
+
+    client.on('logout', handleLogout);
 });
 
 server.listen(3000);
