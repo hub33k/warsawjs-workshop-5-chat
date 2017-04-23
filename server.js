@@ -10,16 +10,6 @@ function handleMessage(client) {
     }
 }
 
-// same as above
-// function handleMessage(client) {
-//     function callback(msg) {
-//         console.log(msg);
-//         client.broadcast.emit('message', msg); // send msg to all clients
-//     }
-//
-//     return callback;
-// }
-
 function handleRegister(client) {
     return (userObject) => {
         if (USERS[userObject.username]) {
