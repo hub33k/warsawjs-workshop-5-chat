@@ -4,13 +4,19 @@
   "description": "Chat app in NodeJS",
   "main": "index.js",
   "scripts": {
+    "db:clear": "rm -f ./db/chat_users.db",
+    "db:bootstrap": "knex migrate:latest --env production",
+    "db:rebuild": "npm run db:clear && npm run db:bootstrap",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "hub33k",
   "license": "ISC",
   "dependencies": {
+    "knex": "^0.12.9",
+    "sha.js": "^2.4.8",
     "socket.io": "^1.7.3",
-    "socket.io-client": "^1.7.3"
+    "socket.io-client": "^1.7.3",
+    "sqlite3": "^3.1.8"
   }
 }
