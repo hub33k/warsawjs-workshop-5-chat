@@ -10,7 +10,7 @@ function clearPrompt() {
     process.stdout.clearLine();
 }
 
-socket.on('register', (registerSuccess) => {
+function handleRegisterResp(registerSuccess) {
     clearPrompt();
     if (registerSuccess) {
         console.log('>> Registration success!');
@@ -18,9 +18,9 @@ socket.on('register', (registerSuccess) => {
         console.log('>> Registration failed!');
     }
     readline.prompt();
-});
+}
 
-socket.on('login', (username) => {
+function handleLoginResp(username) {
     clearPrompt();
     if (username) {
         LOGGED_USER = username;
@@ -28,17 +28,18 @@ socket.on('login', (username) => {
     } else {
         console.log('>> Login failed!');
     }
-
     readline.prompt();
-});
+}
 
-socket.on('message', (msg) => {
+function handleIncomingMsg(msg) {
     clearPrompt();
     console.log(`>> ${msg}`);
     readline.prompt();
-});
+}
 
-console.log('Client connected.');
+socket.on('register', handleRegisterResp);
+socket.on('login', handleLoginResp);
+socket.on('message', handleIncomingMsg);
 
 let LOGGED_USER = '';
 
@@ -71,8 +72,8 @@ readline.on('line', (line) => {
     } else if (line.trim()) {
         socket.emit('message', line);
     }
-
     readline.prompt();
 });
 
+console.log('Client connected.');
 readline.prompt();
